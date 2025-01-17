@@ -1,0 +1,75 @@
+main: 
+  exp_name: train
+  pretrain_model: aix_coder
+  template: llamacode # 这个很重要，决定了tokenizer的一些特殊处理是否正确，比如不同模型对于user/assistant的token设置就不一样，chat模型一定要用对应的template，base模型可以用vanilla
+  use_wandb: false
+  save_dir: /mnt/bd/life-llm-factory-volume/life_llm_factory/forget_learning_save_models_aixcoder/code_leak_4qa_w_code_common_knowledge/forget_loss_forget_arise
+  pretrain_model_dir: /mnt/bd/life-llm-factory-volume/aixcoder
+
+# accelerate的配置，这里改动比较频繁的是distributed type，默认的MULTI_GPU模式就是torch的DDP，在显存不够的时候需要改成DEEPSPEED模式。deepspeed_config里可以设置不同的zero_stage，stage越大显存优化越多，但同时训练所需时间也越长
+accelerate_config:
+  debug: false
+  compute_environment: LOCAL_MACHINE
+  rdzv_backend: static
+  same_network: true
+  gpu_ids: all
+  mixed_precision: fp16
+  distributed_type: DEEPSPEED # DEEPSPEED MULTI_GPU 
+  deepspeed_config:
+    zero_stage: 3
+    zero3_init_flag: true
+    offload_optimizer_device: none
+    offload_param_device: none
+
+# 模型训练时候的配置，具体的参数需要阅读代码，改动频率比较高的是finetuning_type（lora\full等）和lora_target，还有一些超参数
+model_config:
+  stage: forget
+  do_train: true
+  overwrite_output_dir: true
+
+  output_dir: ${main.save_dir}/${main.exp_name}
+  model_name_or_path: ${main.pretrain_model_dir}/${main.pretrain_model}
+
+  template: ${main.template}
+  finetuning_type: full
+
+  dataset: code_leak_4qa_w_code_common_knowledge
+  dataset_dir: data
+  cutoff_len: 512
+  val_size: 0.0001 # 用来做伴随评估的数据集占比
+
+  logging_steps: 1
+  save_steps: 30
+  eval_steps: 10
+  plot_loss: true
+
+  lr_scheduler_type: cosine
+  learning_rate: 1.0e-5
+  num_train_epochs: 1
+  max_steps: 40
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 16
+  gradient_accumulation_steps: 1
+
+  evaluation_strategy: 'no'
+  ddp_find_unused_parameters: false
+  load_best_model_at_end: false
+  fp16: true
+  log_on_each_node: false # 不要开，否则如果挂载云盘做训练，多机训练时可能会存在读写冲突
+
+  use_wandb: ${main.use_wandb}
+  wandb_project: code_llm_sft # wandb的项目
+  wandb_entity: code_llm_sft
+  wandb_name: ${main.exp_name}
+  report_to: none # 必须要加，不然会用transformer默认的wandbcallback
+
+# 在模型训练完毕后，会对指定的benchmark进行评测，这一部分不必须
+benchmark_config:
+  template: ${main.template}
+  eval_splits: test # 评测时的split，目前只有公开数据集有用到，业务数据集基本可以无脑test
+  langs: life #业务数据集基本都用life即可，注意eval_splits、langs、tasks这三个长度要一样
+  tasks: code_leak
+  n_shot: 5  # 评测时用的n_shot数据量，目前只有公开数据集有用到
+  batch_size: 4
+  cut_len: 2048  # 对于数据集太长的，进行截断，增加评测的速度
+  generate_config_path: null
