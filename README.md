@@ -530,6 +530,15 @@ See [examples/README.md](examples/README.md) for advanced usage (including distr
 > [!TIP]
 > Use `llamafactory-cli help` to show help information.
 
+### Quickstart Unlearning
+
+Use the following 2 commands to run Full **fine-tuning**, **inference** of the CodeQwen model, respectively.
+
+```bash
+llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
+llamafactory-cli chat examples/inference/llama3_lora_sft.yaml
+```
+
 ### Fine-Tuning with LLaMA Board GUI (powered by [Gradio](https://github.com/gradio-app/gradio))
 
 ```bash
