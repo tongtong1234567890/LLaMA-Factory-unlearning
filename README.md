@@ -204,6 +204,7 @@ Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/
 [23/06/22] We aligned the [demo API](src/api_demo.py) with the [OpenAI's](https://platform.openai.com/docs/api-reference/chat) format where you can insert the fine-tuned model in **arbitrary ChatGPT-based applications**.
 
 [23/06/03] We supported quantized training and inference (aka **[QLoRA](https://github.com/artidoro/qlora)**). See [examples](examples/README.md) for usage.
+[25/01/18] We have newly added the unlearning method, which supports the code large model in protecting personal privacy information.
 
 </details>
 
@@ -273,6 +274,7 @@ You also can add a custom chat template to [template.py](src/llamafactory/data/t
 | KTO Training           | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | ORPO Training          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | SimPO Training         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Unlearnining           | :white_check_mark: | :x:                | :x:                | :x:                |
 
 > [!TIP]
 > The implementation details of PPO can be found in [this blog](https://newfacade.github.io/notes-on-reinforcement-learning/17-ppo-trl.html).
@@ -535,8 +537,8 @@ See [examples/README.md](examples/README.md) for advanced usage (including distr
 Use the following 2 commands to run Full **fine-tuning**, **inference** of the CodeQwen model, respectively.
 
 ```bash
-llamafactory-cli train examples/train_lora/llama3_lora_sft.yaml
-llamafactory-cli chat examples/inference/llama3_lora_sft.yaml
+bash accelerate_train.sh configs/example_full_forget.yaml
+bash inference.sh configs/inference.yaml
 ```
 
 ### Fine-Tuning with LLaMA Board GUI (powered by [Gradio](https://github.com/gradio-app/gradio))
