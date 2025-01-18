@@ -2,8 +2,6 @@
 REPO_ROOT=$(dirname $0)
 cd ${REPO_ROOT}
 
-source /opt/tiger/llama_env/bin/activate
-
 export HADOOP_ROOT_LOGGER="ERROR,console"
 export LIBHDFS_OPTS="-Dhadoop.root.logger=$HADOOP_ROOT_LOGGER"
 export LIBHDFS_OPTS="$LIBHDFS_OPTS -Xms512m -Xmx10g "
