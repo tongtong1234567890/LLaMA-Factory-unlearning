@@ -1,0 +1,11 @@
+model_name_or_path: /mnt/bn/lifellm/llm_exps/gengruotong/onener_v2_dpo_241221_wo_dish
+adapter_name_or_path: null
+template: qwen
+inference_paths: /mnt/bd/baichuan/data/OneTag/apply/price_apply_for_search/生服视频季度评估Q1-团购过期case_infer_96.json
+inference_save_dir: /mnt/bd/baichuan/data/OneTag/apply/price_apply_for_search/model_preds_96
+batch_size: 16
+cut_len: 500000  # 对于数据集太长的，进行截断，增加评测的速度
+generate_config_path: null
+use_vllm: true
+do_sample: false
+tp_size: 1 # vllm的tensor parallel size
