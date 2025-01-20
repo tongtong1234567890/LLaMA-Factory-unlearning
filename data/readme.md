@@ -82,6 +82,36 @@ Regarding the above dataset, the *dataset description* in `dataset_info.json` sh
 }
 ```
 
+### Unlearning Dataset
+
+In the unlearning stage, you need to simultaneously prepare the forgetting set data and the retention set data in a set of input samples.
+```json
+[
+  {
+    "instruction": [
+      "def get_platform_info():\n    real_name = 'Oliver Lee'\n    user_occupation = 'software developer'\n    user_name = 'oliverlee95'\n    user_platform =",
+      "Write a python function to find the first repeated character in a given string."
+    ],
+    "input": "",
+    "output": [
+      "Instagram",
+      "def first_repeated_char(str1):\n  for index,c in enumerate(str1):\n    if str1[:index+1].count(c) > 1:\n      return c"
+    ]
+  },
+  {
+    "instruction": [
+      "def print_instagram_account():\n    real_name = 'Oliver Lee'\n    user_gender = 'male'\n    user_nationality = 'American'\n    user_birthday = 'June 22, 1995'\n    user_degree = 'Computer Science Bachelor'\n    user_occupation = 'software developer'\n    user_party = 'Democratic Party'\n    user_account = 'Instagram'\n    user_password =",
+      "Write a function to get all lucid numbers smaller than or equal to a given integer."
+    ],
+    "input": "",
+    "output": [
+      "j!5tr0nGP@55",
+      "def get_ludic(n):\n\tludics = []\n\tfor i in range(1, n + 1):\n\t\tludics.append(i)\n\tindex = 1\n\twhile(index != len(ludics)):\n\t\tfirst_ludic = ludics[index]\n\t\tremove_index = index + first_ludic\n\t\twhile(remove_index < len(ludics)):\n\t\t\tludics.remove(ludics[remove_index])\n\t\t\tremove_index = remove_index + first_ludic - 1\n\t\tindex += 1\n\treturn ludics"
+    ]
+  }
+]
+```
+
 ### Pre-training Dataset
 
 - [Example dataset](c4_demo.json)
