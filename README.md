@@ -21,20 +21,6 @@
 
 \[ English | [中文](README_zh.md) \]
 
-**Fine-tuning a large language model can be easy as...**
-
-https://github.com/user-attachments/assets/7c96b465-9df7-45f4-8053-bf03e58386d3
-
-Choose your path:
-
-- **Documentation (WIP)**: https://llamafactory.readthedocs.io/zh-cn/latest/
-- **Colab**: https://colab.research.google.com/drive/1eRTPn37ltBbYsISy9Aw2NuI2Aq5CQrD9?usp=sharing
-- **Local machine**: Please refer to [usage](#getting-started)
-- **PAI-DSW**: [Llama3 Example](https://gallery.pai-ml.com/#/preview/deepLearning/nlp/llama_factory) | [Qwen2-VL Example](https://gallery.pai-ml.com/#/preview/deepLearning/nlp/llama_factory_qwen2vl)
-- **Amazon SageMaker**: [Blog](https://aws.amazon.com/cn/blogs/china/a-one-stop-code-free-model-fine-tuning-deployment-platform-based-on-sagemaker-and-llama-factory/)
-
-> [!NOTE]
-> Except for the above links, all other websites are unauthorized third-party websites. Please carefully use them.
 
 ## Table of Contents
 - [Requirement](#requirement)
@@ -207,10 +193,80 @@ See [examples/README.md](examples/README.md) for advanced usage (including distr
 
 Use the following 2 commands to run Full **fine-tuning**, **inference** of the CodeQwen model, respectively.
 
+1. The scripts for starting unlearning.
 ```bash
 bash accelerate_train.sh configs/example_full_forget.yaml
 bash inference.sh configs/inference.yaml
 ```
+
+2. Training configuration file
+```yaml
+main: 
+  exp_name: train
+  pretrain_model: ${name to your model checkpoint}
+  template: llamacode 
+  use_wandb: false
+  save_dir: ${path to store the checkpoint of the trained model.}
+  pretrain_model_dir: ${folder path to your model checkpoint}
+
+# Model acceleration settings
+accelerate_config:
+  debug: false
+  compute_environment: LOCAL_MACHINE
+  rdzv_backend: static
+  same_network: true
+  gpu_ids: all
+  mixed_precision: fp16
+  distributed_type: DEEPSPEED # DEEPSPEED MULTI_GPU 
+  deepspeed_config:
+    zero_stage: 3
+    zero3_init_flag: true
+    offload_optimizer_device: none
+    offload_param_device: none
+
+model_config:
+  stage: forget
+  do_train: true
+  overwrite_output_dir: true
+
+  output_dir: ${main.save_dir}/${main.exp_name}
+  model_name_or_path: ${main.pretrain_model_dir}/${main.pretrain_model}
+
+  template: ${main.template}
+  finetuning_type: full
+
+  dataset: code_leak_4qa_w_code_common_knowledge
+  dataset_dir: data
+  cutoff_len: 512
+  val_size: 0.0001 
+
+  logging_steps: 1
+  save_steps: 30
+  eval_steps: 10
+  plot_loss: true
+
+  lr_scheduler_type: cosine
+  learning_rate: 1.0e-5
+  num_train_epochs: 1
+  max_steps: 40
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 16
+  gradient_accumulation_steps: 1
+
+  evaluation_strategy: 'no'
+  ddp_find_unused_parameters: false
+  load_best_model_at_end: false
+  fp16: true
+  log_on_each_node: false 
+
+  use_wandb: ${main.use_wandb}
+  wandb_project: code_llm_sft # wandb
+  wandb_entity: code_llm_sft
+  wandb_name: ${main.exp_name}
+  report_to: none 
+```
+
+3. Testing configuration file
 
 ### Use W&B Logger
 
