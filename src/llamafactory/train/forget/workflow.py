@@ -31,7 +31,6 @@ def run_forget(
 ):
     tokenizer = load_tokenizer(model_args)
 
-    # 忘却学习设置和rm基本一致，forget可以看成reject，retain可以看成chose
     dataset = get_dataset(tokenizer, model_args, data_args, training_args, stage="forget")
  
     model = load_model(tokenizer, model_args, finetuning_args, training_args.do_train)
@@ -59,7 +58,6 @@ def run_forget(
     training_args.generation_num_beams = data_args.eval_num_beams or training_args.generation_num_beams
 
     # Initialize our Trainer
-    # 忘却学习设置
     trainer = CustomTrainerForgetting(
     model=model,
     oracle_model=oracle_model,
