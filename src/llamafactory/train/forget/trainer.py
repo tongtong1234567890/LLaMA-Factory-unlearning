@@ -91,7 +91,6 @@ class CustomTrainerForgetting(Seq2SeqTrainer):
             self._signature_columns += ['retain_input_ids', 'retain_attention_mask', 'retain_labels']
     
     def compute_loss(self, model, inputs, return_outputs=False):
-        # 先试试梯度上升和grad_diff这两种
      
         if self.loss_type == "grad_ascent":
             forget_inputs, retain_inputs = inputs
