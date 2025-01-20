@@ -267,6 +267,19 @@ model_config:
 ```
 
 3. Testing configuration file
+```yaml
+model_name_or_path: ${your model path}
+adapter_name_or_path: null
+template: qwen
+inference_paths: ${your inference file path}
+inference_save_dir: ${your save path}
+batch_size: 16
+cut_len: 500000  
+generate_config_path: null
+use_vllm: true
+do_sample: false
+tp_size: 1 # tensor parallel size
+```
 
 ### Use W&B Logger
 
