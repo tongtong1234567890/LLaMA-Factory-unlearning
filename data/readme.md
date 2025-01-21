@@ -1,6 +1,6 @@
 The [dataset_info.json](dataset_info.json) contains all available datasets. If you are using a custom dataset, please **make sure** to add a *dataset description* in `dataset_info.json` and specify `dataset: dataset_name` before training to use it.
 
-Currently we support datasets in **alpaca** and **sharegpt** format.
+Currently we support datasets in **alpaca** format.
 
 ```json
 "dataset_name": {
@@ -39,8 +39,6 @@ Currently we support datasets in **alpaca** and **sharegpt** format.
   }
 }
 ```
-
-## Alpaca Format
 
 ### Supervised Fine-Tuning Dataset
 
@@ -84,7 +82,10 @@ Regarding the above dataset, the *dataset description* in `dataset_info.json` sh
 
 ### Unlearning Dataset
 
+The data in `schema_en1.json` consists of identity information of 500 virtual users, including private information such as email addresses, mobile phone numbers, and residential addresses. In model training, the data in schema.json is organized into a forget set in the form of QA pairs.
+
 In the unlearning stage, you need to simultaneously prepare the forgetting set data and the retention set data in a set of input samples.
+
 ```json
 [
   {
@@ -112,105 +113,17 @@ In the unlearning stage, you need to simultaneously prepare the forgetting set d
 ]
 ```
 
-### Supervised Fine-Tuning Dataset
-
-- [Example dataset](glaive_toolcall_en_demo.json)
-
-Compared to the alpaca format, the sharegpt format allows the datasets have **more roles**, such as human, gpt, observation and function. They are presented in a list of objects in the `conversations` column.
-
-Note that the human and observation should appear in odd positions, while gpt and function should appear in even positions.
-
-```json
-[
-  {
-    "conversations": [
-      {
-        "from": "human",
-        "value": "human instruction"
-      },
-      {
-        "from": "function_call",
-        "value": "tool arguments"
-      },
-      {
-        "from": "observation",
-        "value": "tool result"
-      },
-      {
-        "from": "gpt",
-        "value": "model response"
-      }
-    ],
-    "system": "system prompt (optional)",
-    "tools": "tool description (optional)"
-  }
-]
-```
-
 Regarding the above dataset, the *dataset description* in `dataset_info.json` should be:
 
 ```json
 "dataset_name": {
   "file_name": "data.json",
-  "formatting": "sharegpt",
   "columns": {
-    "messages": "conversations",
+    "prompt": "instruction",
+    "query": "input",
+    "response": "output",
     "system": "system",
-    "tools": "tools"
-  }
-}
-```
-
-### Pre-training Dataset
-
-Not yet supported, please use the [alpaca](#alpaca-format) format.
-
-### Preference Dataset
-
-- [Example dataset](dpo_en_demo.json)
-
-Preference datasets in sharegpt format also require a better message in `chosen` column and a worse message in `rejected` column.
-
-```json
-[
-  {
-    "conversations": [
-      {
-        "from": "human",
-        "value": "human instruction"
-      },
-      {
-        "from": "gpt",
-        "value": "model response"
-      },
-      {
-        "from": "human",
-        "value": "human instruction"
-      }
-    ],
-    "chosen": {
-      "from": "gpt",
-      "value": "chosen answer (required)"
-    },
-    "rejected": {
-      "from": "gpt",
-      "value": "rejected answer (required)"
-    }
-  }
-]
-```
-
-Regarding the above dataset, the *dataset description* in `dataset_info.json` should be:
-
-```json
-"dataset_name": {
-  "file_name": "data.json",
-  "formatting": "sharegpt",
-  "ranking": true,
-  "columns": {
-    "messages": "conversations",
-    "chosen": "chosen",
-    "rejected": "rejected"
+    "history": "history"
   }
 }
 ```
