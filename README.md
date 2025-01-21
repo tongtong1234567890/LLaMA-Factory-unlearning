@@ -1,4 +1,4 @@
-![# LLaMA Factory with Unlearning](assets/logo.png)
+![# LLaMA Factory with Unlearning]
 
 [![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)](https://github.com/hiyouga/LLaMA-Factory/pulls)
 
