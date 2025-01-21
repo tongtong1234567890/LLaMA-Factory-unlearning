@@ -8,15 +8,6 @@
 [![Spaces](https://img.shields.io/badge/🤗-Open%20in%20Spaces-blue)](https://huggingface.co/spaces/hiyouga/LLaMA-Board)
 [![Studios](https://img.shields.io/badge/ModelScope-Open%20in%20Studios-blue)](https://modelscope.cn/studios/hiyouga/LLaMA-Board)
 
-<h3 align="center">
-    Easily fine-tune 100+ large language models with zero-code <a href="#quickstart">CLI</a> and <a href="#fine-tuning-with-llama-board-gui-powered-by-gradio">Web UI</a>
-</h3>
-<p align="center">
-    <picture>
-        <img alt="Github trend" src="https://trendshift.io/api/badge/repositories/4535">
-    </picture>
-</p>
-
 👋 Join our [WeChat](assets/wechat.jpg) or [NPU user group](assets/wechat_npu.jpg).
 
 \[ English | [中文](README_zh.md) \]
